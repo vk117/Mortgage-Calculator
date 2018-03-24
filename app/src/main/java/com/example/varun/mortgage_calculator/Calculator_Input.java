@@ -21,6 +21,9 @@ public class Calculator_Input extends AppCompatActivity {
     private EditText APR;
     private Spinner terms;
     private Button calculate;
+    private TextView heading;
+    private TextView show;
+
     public String valuePrice;
     public String valueDown;
     public String valueAPR;
@@ -36,6 +39,8 @@ public class Calculator_Input extends AppCompatActivity {
         downPayment = (EditText) findViewById(R.id.editText19);
         APR = (EditText) findViewById(R.id.editText20);
         terms = (Spinner) findViewById(R.id.spinner3);
+        heading = (TextView) findViewById(R.id.textView3);
+        show = (TextView) findViewById(R.id.textView6);
         ArrayAdapter<String> adapter;
         List<String> list;
         list = new ArrayList<String>();
@@ -54,9 +59,10 @@ public class Calculator_Input extends AppCompatActivity {
                 valueAPR = APR.getText().toString();
                 valueTerm = terms.getSelectedItem().toString();
                 result = calculate();
-                Intent intent = new Intent(Calculator_Input.this, OuputActivity.class);
-                intent.putExtra("result", result);
-                startActivity(intent);
+                heading.setText("Monthly Payment:");
+                show.setText( Double.toString(result));
+                heading.setVisibility(View.VISIBLE);
+                show.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -77,6 +83,10 @@ public class Calculator_Input extends AppCompatActivity {
             downPayment.setText("");
             APR.setText("");
             terms.setSelection(0);
+            heading.setText("");
+            show.setText("");
+            heading.setVisibility(View.INVISIBLE);
+            show.setVisibility(View.INVISIBLE);
         }
         return super.onOptionsItemSelected(item);
     }
