@@ -1,5 +1,6 @@
 package com.example.varun.mortgage_calculator;
 
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -23,12 +24,13 @@ public class Calculator_Input extends AppCompatActivity {
     private Button calculate;
     private TextView heading;
     private TextView show;
+    private FloatingActionButton myFAB;
 
     public String valuePrice;
     public String valueDown;
     public String valueAPR;
     public String valueTerm;
-    public double result;
+    public double result = 0.0;
 
 
     @Override
@@ -58,11 +60,38 @@ public class Calculator_Input extends AppCompatActivity {
                 valueDown = downPayment.getText().toString();
                 valueAPR = APR.getText().toString();
                 valueTerm = terms.getSelectedItem().toString();
-                result = calculate();
-                heading.setText("Monthly Payment:");
-                show.setText( Double.toString(result));
-                heading.setVisibility(View.VISIBLE);
-                show.setVisibility(View.VISIBLE);
+                if(valuePrice.equals("") || valueDown.equals("")|| valueAPR.equals("")|| valueTerm.equals("")) {
+
+                    Toast.makeText(Calculator_Input.this, R.string.wrong_input, Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    result = calculate();
+                    heading.setText("Monthly Payment:");
+                    show.setText(Double.toString(result));
+                    heading.setVisibility(View.VISIBLE);
+                    show.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        myFAB = (FloatingActionButton) findViewById(R.id.fab);
+        myFAB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(valuePrice.equals("") || valueDown.equals("")|| valueAPR.equals("")|| valueTerm.equals("")|| result == 0.0){
+                    Toast.makeText(Calculator_Input.this, R.string.cannot_save, Toast.LENGTH_SHORT).show();
+                }
+                else{
+                    Intent intent = new Intent(Calculator_Input.this, SaveCalculation.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("valuePrice", valuePrice);
+                    bundle.putString("valueDown", valueDown);
+                    bundle.putString("valueAPR", valueAPR);
+                    bundle.putString("valueTerm", valueTerm);
+                    bundle.putDouble("result", result);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }
             }
         });
     }
