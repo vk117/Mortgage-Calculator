@@ -16,6 +16,8 @@
         android:text="Property Info"
         android:textSize="20sp"/>
 
+
+
     <Spinner
         android:id="@+id/spinner"
         android:layout_width="match_parent"

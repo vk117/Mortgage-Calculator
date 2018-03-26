@@ -26,11 +26,12 @@ public class Calculator_Input extends AppCompatActivity {
     private TextView show;
     private FloatingActionButton myFAB;
 
+
+    public double result = 0.0;
     public String valuePrice;
     public String valueDown;
     public String valueAPR;
     public String valueTerm;
-    public double result = 0.0;
 
 
     @Override
