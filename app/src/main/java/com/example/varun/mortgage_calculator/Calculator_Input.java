@@ -1,6 +1,9 @@
 package com.example.varun.mortgage_calculator;
 
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -25,6 +28,7 @@ public class Calculator_Input extends AppCompatActivity {
     private TextView heading;
     private TextView show;
     private FloatingActionButton myFAB;
+    private DrawerLayout drawer;
 
 
     public double result = 0.0;
@@ -93,6 +97,22 @@ public class Calculator_Input extends AppCompatActivity {
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }
+            }
+        });
+
+
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        NavigationView nav = (NavigationView) findViewById(R.id.nav_view);
+        nav.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                if(item.getItemId() == R.id.map); {
+                    Intent myIntent = new Intent(Calculator_Input.this, MapsActivity.class);
+                    startActivity(myIntent);
+                }
+                item.setChecked(true);
+                drawer.closeDrawers();
+                return true;
             }
         });
     }

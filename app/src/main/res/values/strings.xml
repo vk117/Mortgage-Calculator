@@ -56,4 +56,5 @@
         <item>Wisconsin</item>
         <item>Wyoming</item>
     </string-array>
+    <string name="drawer_map">Google Map</string>
 </resources>
