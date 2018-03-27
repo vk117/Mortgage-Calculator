@@ -1,8 +1,10 @@
 package com.example.varun.mortgage_calculator;
 
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
+import com.example.varun.mortgage_calculator.database.DBHelper;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -13,6 +15,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    public LatLng coordinates;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +25,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        coordinates = getIntent().getExtras().getParcelable("coordinates");
     }
 
 
@@ -39,8 +43,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
+        /*LatLng sydney = new LatLng(-34, 151);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));*/
+
+        /*i =0;
+        for(i=0; i<limit; i++){
+            mMap.addMarker(new MarkerOptions()
+                .position(coordinates[i])
+                .title("Calculation " + i));
+        }*/
+
+        mMap.addMarker(new MarkerOptions()
+            .position(coordinates)
+            .title("Home"));
+
+
     }
 }

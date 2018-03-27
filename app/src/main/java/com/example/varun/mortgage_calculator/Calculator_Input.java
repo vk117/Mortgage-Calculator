@@ -1,5 +1,10 @@
 package com.example.varun.mortgage_calculator;
 
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.location.Address;
+import android.location.Geocoder;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -12,10 +17,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
 import android.content.Intent;
+import android.util.Log;
 
+import com.example.varun.mortgage_calculator.database.DBHelper;
+import com.example.varun.mortgage_calculator.database.DBschema;
+import com.google.android.gms.maps.model.LatLng;
+
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.lang.Math;
+import java.util.Locale;
 
 
 public class Calculator_Input extends AppCompatActivity {
@@ -29,6 +42,8 @@ public class Calculator_Input extends AppCompatActivity {
     private TextView show;
     private FloatingActionButton myFAB;
     private DrawerLayout drawer;
+    private SQLiteDatabase database;
+    private DBHelper dbhelper;
 
 
     public double result = 0.0;
@@ -107,7 +122,21 @@ public class Calculator_Input extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 if(item.getItemId() == R.id.map); {
+                    dbhelper = new DBHelper(Calculator_Input.this);
+                    database = dbhelper.getReadableDatabase();
+                    String selectQuery = "SELECT  * FROM " + DBschema.TABLE_NAME + " LIMIT 1";
+                    Cursor cursor = database.rawQuery(selectQuery, null);
+                    String arr;
+                    cursor.moveToFirst();
+                    arr = cursor.getString(cursor.getColumnIndex(DBschema.ST_ADDRESS));
+                    arr = arr + ", " + cursor.getString(cursor.getColumnIndex(DBschema.CITY));
+                    arr = arr + ", " + cursor.getString(cursor.getColumnIndex(DBschema.STATE));
+                    arr = arr + ", " + cursor.getString(cursor.getColumnIndex(DBschema.ZIPCODE));
+
+                    LatLng coordinates = getLatLongFromAddress(Calculator_Input.this, arr);
+
                     Intent myIntent = new Intent(Calculator_Input.this, MapsActivity.class);
+                    myIntent.putExtra("coordinates", coordinates);
                     startActivity(myIntent);
                 }
                 item.setChecked(true);
@@ -150,5 +179,24 @@ public class Calculator_Input extends AppCompatActivity {
         double den = Power - 1;
         double result = num/den;
         return result;
+    }
+
+    public LatLng getLatLongFromAddress(Context context, String addr) {
+        Geocoder coder = new Geocoder(context, Locale.getDefault());
+        List<Address> address;
+        LatLng point = null;
+        try {
+            address = coder.getFromLocationName(addr, 5);
+            if(address == null) {
+                return null;
+            }
+            Address location = address.get(0);
+            point = new LatLng(location.getLatitude(), location.getLongitude());
+            return point;
+        }
+        catch(IOException ex){
+            ex.printStackTrace();
+        }
+        return point;
     }
 }

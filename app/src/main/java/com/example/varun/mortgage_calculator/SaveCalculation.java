@@ -98,7 +98,7 @@ public class SaveCalculation extends AppCompatActivity {
                     Toast.makeText(SaveCalculation.this, R.string.wrong_input, Toast.LENGTH_SHORT).show();
                 }
                 else{
-                    dbhelper = new DBHelper(getApplicationContext());
+                    dbhelper = new DBHelper(SaveCalculation.this);
                     database = dbhelper.getWritableDatabase();
                     ContentValues values = new ContentValues();
                     values.put(DBschema.PROP_TYPE, valuePtype);
@@ -112,6 +112,7 @@ public class SaveCalculation extends AppCompatActivity {
                     values.put(DBschema.TERMS, valueTerm);
                     values.put(DBschema.RES, result);
                     long status = database.insert(DBschema.TABLE_NAME, null, values);
+                    database.close();
                     if(status == -1) {
                         Toast.makeText(SaveCalculation.this, "Data not Entered", Toast.LENGTH_SHORT).show();
                     }
