@@ -51,6 +51,7 @@ public class Calculator_Input extends AppCompatActivity {
     public String valueDown;
     public String valueAPR;
     public String valueTerm;
+    public int index;
 
 
     @Override
@@ -122,21 +123,10 @@ public class Calculator_Input extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 if(item.getItemId() == R.id.map); {
-                    dbhelper = new DBHelper(Calculator_Input.this);
-                    database = dbhelper.getReadableDatabase();
-                    String selectQuery = "SELECT  * FROM " + DBschema.TABLE_NAME + " LIMIT 1";
-                    Cursor cursor = database.rawQuery(selectQuery, null);
-                    String arr;
-                    cursor.moveToFirst();
-                    arr = cursor.getString(cursor.getColumnIndex(DBschema.ST_ADDRESS));
-                    arr = arr + ", " + cursor.getString(cursor.getColumnIndex(DBschema.CITY));
-                    arr = arr + ", " + cursor.getString(cursor.getColumnIndex(DBschema.STATE));
-                    arr = arr + ", " + cursor.getString(cursor.getColumnIndex(DBschema.ZIPCODE));
-
-                    LatLng coordinates = getLatLongFromAddress(Calculator_Input.this, arr);
-
+                    ArrayList<LatLng> coordinates = getDatabase(Calculator_Input.this);
                     Intent myIntent = new Intent(Calculator_Input.this, MapsActivity.class);
                     myIntent.putExtra("coordinates", coordinates);
+                    myIntent.putExtra("index", index);
                     startActivity(myIntent);
                 }
                 item.setChecked(true);
@@ -187,16 +177,44 @@ public class Calculator_Input extends AppCompatActivity {
         LatLng point = null;
         try {
             address = coder.getFromLocationName(addr, 5);
-            if(address == null) {
-                return null;
+            if(address.size()>0){
+                Address location = address.get(0);
+                point = new LatLng(location.getLatitude(), location.getLongitude());
+                return point;
             }
-            Address location = address.get(0);
-            point = new LatLng(location.getLatitude(), location.getLongitude());
-            return point;
+
         }
         catch(IOException ex){
             ex.printStackTrace();
         }
         return point;
+    }
+
+    public ArrayList<LatLng> getDatabase(Context context) {
+        dbhelper = new DBHelper(context);
+        String[] cols = new String[]{DBschema.ST_ADDRESS, DBschema.CITY, DBschema.STATE, DBschema.ZIPCODE};
+        database = dbhelper.getReadableDatabase();
+        Cursor cursor = database.query(DBschema.TABLE_NAME, cols, null, null, null, null, null);
+        String[] arr = new String[cursor.getCount()];
+        int i = 0;
+        cursor.moveToFirst();
+        while(!cursor.isAfterLast()){
+            arr[i] = cursor.getString(cursor.getColumnIndex(DBschema.ST_ADDRESS));
+            arr[i] = arr[i] + "," + cursor.getString(cursor.getColumnIndex(DBschema.CITY));
+            arr [i] = arr[i] + "," + cursor.getString(cursor.getColumnIndex(DBschema.STATE));
+            arr[i] = arr[i] + "," + cursor.getString(cursor.getColumnIndex(DBschema.ZIPCODE));
+            i++;
+            cursor.moveToNext();
+        }
+        ArrayList<LatLng> coordinates = new ArrayList<LatLng>();
+        for(i=0; i<cursor.getCount(); i++){
+            LatLng added = getLatLongFromAddress(context, arr[i]);
+            if(added!= null) {
+                coordinates.add(added);
+            }
+        }
+
+        index = cursor.getCount();
+        return coordinates;
     }
 }

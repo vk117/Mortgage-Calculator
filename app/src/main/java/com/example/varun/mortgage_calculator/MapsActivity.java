@@ -12,10 +12,13 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    public LatLng coordinates;
+    public ArrayList<LatLng> coordinates;
+    public int i=0, index;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +28,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        coordinates = getIntent().getExtras().getParcelable("coordinates");
+        coordinates = getIntent().getParcelableArrayListExtra("coordinates");
+        index = getIntent().getIntExtra("index", 0);
     }
 
 
@@ -47,16 +51,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));*/
 
-        /*i =0;
-        for(i=0; i<limit; i++){
+        i =0;
+        for(LatLng coord : coordinates){
             mMap.addMarker(new MarkerOptions()
-                .position(coordinates[i])
-                .title("Calculation " + i));
-        }*/
+                .position(coord)
+                .title("Calculation "));
+        }
 
-        mMap.addMarker(new MarkerOptions()
+        /*mMap.addMarker(new MarkerOptions()
             .position(coordinates)
-            .title("Home"));
+            .title("Home"));*/
 
 
     }
