@@ -58,6 +58,7 @@ public class Calculator_Input extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getApplicationContext().deleteDatabase(DBHelper.DATABASE_NAME);
         propertyPrice = (EditText) findViewById(R.id.editText18);
         downPayment = (EditText) findViewById(R.id.editText19);
         APR = (EditText) findViewById(R.id.editText20);
@@ -217,4 +218,6 @@ public class Calculator_Input extends AppCompatActivity {
         index = cursor.getCount();
         return coordinates;
     }
+
 }
+
