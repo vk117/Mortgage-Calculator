@@ -127,7 +127,6 @@ public class Calculator_Input extends AppCompatActivity {
                     ArrayList<LatLng> coordinates = getDatabase(Calculator_Input.this);
                     Intent myIntent = new Intent(Calculator_Input.this, MapsActivity.class);
                     myIntent.putExtra("coordinates", coordinates);
-                    myIntent.putExtra("index", index);
                     startActivity(myIntent);
                 }
                 item.setChecked(true);

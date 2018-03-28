@@ -10,6 +10,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
@@ -18,7 +19,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private GoogleMap mMap;
     public ArrayList<LatLng> coordinates;
-    public int i=0, index;
+    public int i=0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +31,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         coordinates = getIntent().getParcelableArrayListExtra("coordinates");
-        index = getIntent().getIntExtra("index", 0);
+
     }
 
 
@@ -45,6 +47,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        Marker[] properties = new Marker[coordinates.size()];
 
         // Add a marker in Sydney and move the camera
         /*LatLng sydney = new LatLng(-34, 151);
@@ -52,10 +55,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));*/
 
         i =0;
-        for(LatLng coord : coordinates){
-            mMap.addMarker(new MarkerOptions()
-                .position(coord)
-                .title("Calculation "));
+        for(i=0; i<coordinates.size(); i++){
+            properties[i] = mMap.addMarker(new MarkerOptions()
+                                .position(coordinates.get(i))
+                                .title(Integer.toString(i)));
         }
 
         /*mMap.addMarker(new MarkerOptions()
